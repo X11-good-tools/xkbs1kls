@@ -11,7 +11,7 @@ but only yf no other key(s) has been pressed.
  Developed by Alexey Korop, 2014
 
  Compile:
-    gcc -lX11 s1kls.c -o xkbs1kls
+    gcc -lX11 -pthread s1kls.c -o xkbs1kls
 
  This program is free software, under the GNU General Public License
  version 3.
@@ -20,10 +20,11 @@ but only yf no other key(s) has been pressed.
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
-#include <X11/Xlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sched.h>
+#include <pthread.h>
 
 //#define TRACE
 
@@ -40,6 +41,14 @@ static int switcher[16];
 */
 
 typedef unsigned char bool;
+
+/* set realtime priority if possible */
+void set_rt_prio(void){
+  struct sched_param param;
+
+  param.__sched_priority = 1;
+  pthread_setschedparam(pthread_self(), SCHED_FIFO, &param); // do not check success
+  }
 
 int main(int argc, char *argv[]) {
   Display *display;
@@ -63,8 +72,9 @@ int main(int argc, char *argv[]) {
     }
   if (n < 2){
 help:
-    printf("Simple X11 1-key Keyboard layout switcher. Version 1.00.\n");
+    printf("Simple X11 1-key Keyboard layout switcher. Version 1.01.\n");
     printf("(c) Alexey Korop, 2014. Free software under GNU GPLv3\n\n");
+    printf("It is recommended to run this program with root privileges for better poll accuracy\n");
     printf("Command line:   s1kls keycode1 keycode2 ...\n\n");
     printf("The key with keycode 'keycode1' sets the layout 1, \n");
     printf("the key with keycode 'keycode2' sets the layout 2 ... \n\n");
@@ -72,6 +82,7 @@ help:
     view_codes = 1;
     }
 
+  set_rt_prio();
   display = XOpenDisplay(NULL);
   if (display == NULL){
     fprintf(stderr, "XOpenDisplay error \n");

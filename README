@@ -4,40 +4,42 @@
     This is free software under GNU GPLv3.
 
                      Installation
-                     
-  Unpack archive and copy the s1kls file to the any location that is suitable for programs.
-    
-                     Command line   
-                     
+
+  Unpack archive and copy as root the s1kls file to the any location that is suitable for programs, /usr/bin/ for instance
+  It is recommended to run this program with root privileges for better poll accuracy. For do this set after installation SUID flag:
+     chmod u+s /usr/bin/s1kls
+
+                     Command line
+
         xkbs1kls keycode1 keycode2 ...
-        
+
   The key with keycode 'keycode1' sets the layout 1,
   the key with keycode 'keycode2' sets the layout 2 ...
-  
+
                      Features
-                     
+
   Only LockGroup switch type supported (each key select the own layout). No layout indicator supported.
   Key codes you can find out by calling this program in the terminal without parameters.
 
                      Backgrownd
-                     
-  Standard X11 layout switcher is activated immediately by pressing the keys and therefore conflicts with the application shortcuts. 
+
+  Standard X11 layout switcher is activated immediately by pressing the keys and therefore conflicts with the application shortcuts.
   This switcher is activated by releasing the keys, but only under the condition that no other key is pressed. For example, You were asked to switch to the layout 2 by RCtrl. Then if You press and release RCtrl, the layout will be switched. But if You pressed in a text editor RCtrl-Right, then the editor performs jump forward a word and layout will not be switched.
 
   If You need a layout indicator, You can use a standard X11 LED indicator or any tray indicator as xxkb.
-  
+
                     Example
-                    
+
   I use 3 layouts: (us,ru,ua), LED "ScrollLock" as indicator and keys following: RShift sets "us", RCtrl sets "ru" and RWin sets "ua". On the pc105 keyboard these keys have the keycodes 62, 105 and 134.
 
   In the X11 keyboard config (in my ArchLinux it is the file /etc/X11/xorg.conf.d/01-keyboard-layout.conf) I define:
-  
+
         Option "XkbLayout" "us, ru, ua"
         Option "XkbOptions" "grp_led:scroll"
 
   In the autostart I call this program:
-  
+
         xkbs1kls 62 105 134 &
-        
-  
+
+
 https://sourceforge.net/projects/s1kls/
