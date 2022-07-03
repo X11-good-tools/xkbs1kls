@@ -1,1 +1,0 @@
-gcc -lX11 -pthread s1kls.c -O2 -o xkbs1kls
